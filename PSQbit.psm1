@@ -113,7 +113,7 @@ function Invoke-qBittorrentLogin {
 function Get-TorrentsList {
     <#
     .SYNOPSIS
-    Retrieves all active torrents. 
+    Retrieves all torrents in qBittorrent. 
     #>
     [CmdletBinding()]
     param (
@@ -132,10 +132,10 @@ function Get-TorrentsList {
     $torrents
 }
 
-function Initialize-TorrentObjectList {
+function Initialize-TorrentDirectory {
     <#
     .SYNOPSIS
-    Builds a list of torrent objects using a csv. Using attributes, builds the save directory. Depends on csv build.
+    Using a desired CSV, this function builds torrent directories and outputs to a list with attributes.
     #>
     [CmdletBinding()]
     param (
@@ -154,12 +154,18 @@ function Initialize-TorrentObjectList {
             MagnetUri   = $target.MagnetUri
             Directory   = $null
         }
+
         if ($torrent.Base -eq 'movie') {
             $directory = $Script:Drive + $torrent.Base + '/' + $torrent.Subtype + '/' + $torrent.Name + ' (' + $torrent.Year + ')'
         }
-        else {
+        elseif ($torrent.Base -eq 'show') {
             $directory = $Script:Drive + $torrent.Base + '/' + $torrent.Subtype + '/' + $torrent.Name + '/S' + $torrent.Season
         }
+        else {
+            # The torrent is a program (Linux ISO, free, open source software, crowd sourced data)
+            $directory = $Script:Drive + $torrent.Base + '/' + $torrent.Subtype + '/' + $torrent.Name
+        }
+
         if (-not(Test-Path -Path $directory)) {
             New-Item -Path $directory -ItemType Directory
         }
