@@ -220,3 +220,43 @@ function Add-TorrentsFromList {
         Start-Sleep -Seconds 3
     }
 }
+
+function Suspend-AllTorrent {
+    <#
+    .SYNOPSIS
+    Pauses all of the torrents in the active state.
+    #>
+    [CmdletBinding()]
+    param (
+        [Microsoft.PowerShell.Commands.WebRequestSession]
+        $Session
+    )
+    $pauseApi = '/command/pauseAll'
+    $pauseUri = "$Global:Uri$pauseApi"
+    $pauseParams = @{
+        Uri     = $pauseUri
+        Session = $Session
+        Method  = 'POST'
+    }
+    Invoke-qBittorrentWebRequest @pauseParams
+}
+
+function Restart-AllTorrent {
+    <#
+    .SYNOPSIS
+    Resumes all of the torrents in the paused state.
+    #>
+    [CmdletBinding()]
+    param (
+        [Microsoft.PowerShell.Commands.WebRequestSession]
+        $Session
+    )
+    $resumeApi = '/command/resumeAll'
+    $resumeUri = "$Global:Uri$resumeApi"
+    $resumeParams = @{
+        Uri     = $resumeUri
+        Session = $Session
+        Method  = 'POST'
+    }
+    Invoke-qBittorrentWebRequest @resumeParams
+}
